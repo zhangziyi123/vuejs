@@ -40,25 +40,34 @@ export default {
  <!--   <Todos />-->
     <!-- 路由匹配到的组件将渲染在这里 -->
     <router-view></router-view>
-    <MyFooter />
+    <MyFooter :todos="todos" />
   </div>
 </template>
 
 <script>
+  import uuid from 'uuid'
   import MyHeader from './components/Header/Header'
   import MyFooter from './components/Footer/Footer'
+  import Store from '.store/index'
   // import Todos from './components/Todos/Todos'
   export default {
     name: 'app',
     data () {
       return {
-        todos: [], // 存储所有todos
-        visibility: 'all' // 存储当前过滤条件
+        todos: Store.todos.fetch() // 存储所有todos
       }
     },
     methods: {
       addTodo (value) {
-        console.log(value) // 输出看看子组件发送的消息内容
+        value = value && value.trim()
+        if (!value) {
+          return
+        }
+        this.todos.push({
+          id: uuid(),
+          title: value,
+          completed: false
+        })
       }
     },
     components: {
@@ -68,6 +77,15 @@ export default {
       let filter = this.$route.params.filter
       if (!filter) {
         this.$router.replace({ path: 'All' })
+      }
+    },
+    // watch todos change for localStorage persistence
+    watch: {
+      todos: {
+        handler: function (todos) {
+          Store.todos.save()
+        },
+        deep: true
       }
     }
   }
