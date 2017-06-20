@@ -10,7 +10,11 @@
 
 <script>
   export default {
-    name: 'todos'
+    name: 'todos',
+    watch: {
+      '$route': function (to, from) {
+        console.log(to)
+      }
+    }
   }
-
 </script>

@@ -36,8 +36,10 @@ export default {
 <template>
 
   <div id="app" class="todoapp">
-    <MyHeader />
-    <Todos />
+    <MyHeader @addTodoHandle="addTodo" />
+ <!--   <Todos />-->
+    <!-- 路由匹配到的组件将渲染在这里 -->
+    <router-view></router-view>
     <MyFooter />
   </div>
 </template>
@@ -45,7 +47,7 @@ export default {
 <script>
   import MyHeader from './components/Header/Header'
   import MyFooter from './components/Footer/Footer'
-  import Todos from './components/Todos/Todos'
+  // import Todos from './components/Todos/Todos'
   export default {
     name: 'app',
     data () {
@@ -54,8 +56,19 @@ export default {
         visibility: 'all' // 存储当前过滤条件
       }
     },
+    methods: {
+      addTodo (value) {
+        console.log(value) // 输出看看子组件发送的消息内容
+      }
+    },
     components: {
-      MyHeader, MyFooter, Todos
+      MyHeader, MyFooter //, Todos
+    },
+    created () {
+      let filter = this.$route.params.filter
+      if (!filter) {
+        this.$router.replace({ path: 'All' })
+      }
     }
   }
 
